@@ -4,9 +4,11 @@ import bike.rental.system.controller.UserController;
 import bike.rental.system.model.DatabaseConnection;
 import bike.rental.system.controller.BikeController;
 import bike.rental.system.controller.RentalController;
+import bike.rental.system.controller.PaymentController;
 import bike.rental.system.model.User;
 import bike.rental.system.model.Bike;
 import bike.rental.system.model.Rental;
+import bike.rental.system.model.Payment;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -18,6 +20,7 @@ public class TestDatabaseConnection {
         UserController userController = new UserController();
         BikeController bikeController = new BikeController();
         RentalController rentalController = new RentalController();
+        PaymentController paymentController = new PaymentController();
         try {
             Connection conn = DatabaseConnection.getConnection();
             if (conn != null && !conn.isClosed()) {
@@ -90,10 +93,25 @@ public class TestDatabaseConnection {
                     System.out.println("Rental with ID " + rental.getRentalId() + " deleted");
                 }
 
+                // Payment CRUD
+                Payment payment = new Payment(0, rental.getRentalId(), 7.0, new Timestamp(new Date().getTime()), "completed");
+                paymentController.createPayment(payment);
+                System.out.println("Payment created with ID: " + payment.getPaymentId());
+
+                Payment readPayment = paymentController.readPayment(payment.getPaymentId());
+                if (readPayment != null) {
+                    System.out.println("Read Payment: Rental ID " + readPayment.getRentalId() + ", Amount " + readPayment.getAmount());
+                    readPayment.setStatus("processed");
+                    paymentController.updatePayment(readPayment);
+                    System.out.println("Payment updated: Status = " + readPayment.getStatus());
+                    paymentController.deletePayment(payment.getPaymentId());
+                    System.out.println("Payment with ID " + payment.getPaymentId() + " deleted");
+                }
+
                 // Clean up temp user and bike
                 userController.deleteUser(tempUser.getUserId());
                 System.out.println("Temp User with ID " + tempUser.getUserId() + " deleted");
-                
+
                 bikeController.deleteBike(tempBike.getBikeId());
                 System.out.println("Temp Bike with ID " + tempBike.getBikeId() + " deleted");
 
