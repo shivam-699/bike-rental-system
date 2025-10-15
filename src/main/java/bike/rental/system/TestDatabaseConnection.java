@@ -1,7 +1,9 @@
 package bike.rental.system;
 
 import bike.rental.system.controller.UserController;
+import bike.rental.system.controller.BikeController;
 import bike.rental.system.model.User;
+import bike.rental.system.model.Bike;
 import bike.rental.system.model.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,12 +12,13 @@ import java.sql.SQLException;
 public class TestDatabaseConnection {
     public static void main(String[] args) {
         UserController userController = new UserController();
+        BikeController bikeController = new BikeController();
         try {
             Connection conn = DatabaseConnection.getConnection();
             if (conn != null && !conn.isClosed()) {
                 System.out.println("Connection successfully!");
 
-                // Create with a unique email
+                // user CRUD
                 String uniqueEmail = "john" + System.currentTimeMillis() + "@example.com"; // Unique email
                 User user = new User(0, "John Doe", uniqueEmail, "password123", "1234567890", "customer", null);
                 userController.createUser(user);
@@ -25,6 +28,11 @@ public class TestDatabaseConnection {
                 User readUser = userController.readUser(user.getUserId());
                 if (readUser != null) {
                     System.out.println("Read User: " + readUser.getName() + ", Email: " + readUser.getEmail());
+                    readUser.setName("John Updated");
+                    userController.updateUser(readUser);
+                    System.out.println("User updated: " + readUser.getName());
+                    userController.deleteUser(user.getUserId());
+                    System.out.println("User with ID " + user.getUserId() + " deleted");
                 } else {
                     System.out.println("Read User failed: User not found");
                 }
@@ -37,10 +45,19 @@ public class TestDatabaseConnection {
                     System.out.println("User updated: " + readUser.getName());
                 }
 
-                // Delete
-                if (readUser != null) {
-                    userController.deleteUser(user.getUserId());
-                    System.out.println("User with ID " + user.getUserId() + " deleted");
+                // Bike CRUD
+                Bike bike = new Bike(0, "Trek", "FX 1", 5.0, "available", "Good condition", null);
+                bikeController.createBike(bike);
+                System.out.println("Bike created with ID: " + bike.getBikeId());
+
+                Bike readBike = bikeController.readBike(bike.getBikeId());
+                if (readBike != null) {
+                    System.out.println("Read Bike: " + readBike.getBrand() + " " + readBike.getModel());
+                    readBike.setPricePerHour(6.0);
+                    bikeController.updateBike(readBike);
+                    System.out.println("Bike updated: Price per hour = " + readBike.getPricePerHour());
+                    bikeController.deleteBike(bike.getBikeId());
+                    System.out.println("Bike with ID " + bike.getBikeId() + " deleted");
                 }
 
                 DatabaseConnection.closeConnection();
@@ -49,7 +66,7 @@ public class TestDatabaseConnection {
             }
         } catch (SQLException e) {
             System.err.println("Operation failed: " + e.getMessage());
-            e.printStackTrace(); // Add stack trace for detailed error
+            e.printStackTrace();
         }
     }
 }
