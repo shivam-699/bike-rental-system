@@ -89,8 +89,6 @@ public class TestDatabaseConnection {
                     readRental.setTotalCost(7.0);
                     rentalController.updateRental(readRental);
                     System.out.println("Rental updated: Total cost = " + readRental.getTotalCost());
-                    rentalController.deleteRental(rental.getRentalId());
-                    System.out.println("Rental with ID " + rental.getRentalId() + " deleted");
                 }
 
                 // Payment CRUD
@@ -108,6 +106,12 @@ public class TestDatabaseConnection {
                     System.out.println("Payment with ID " + payment.getPaymentId() + " deleted");
                 }
 
+
+                // Delete rental after payment
+                rentalController.deleteRental(rental.getRentalId());
+                System.out.println("Rental with ID " + rental.getRentalId() + " deleted");
+
+                
                 // Clean up temp user and bike
                 userController.deleteUser(tempUser.getUserId());
                 System.out.println("Temp User with ID " + tempUser.getUserId() + " deleted");
