@@ -1,18 +1,23 @@
 package bike.rental.system;
 
 import bike.rental.system.controller.UserController;
+import bike.rental.system.model.DatabaseConnection;
 import bike.rental.system.controller.BikeController;
+import bike.rental.system.controller.RentalController;
 import bike.rental.system.model.User;
 import bike.rental.system.model.Bike;
-import bike.rental.system.model.DatabaseConnection;
+import bike.rental.system.model.Rental;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 
 public class TestDatabaseConnection {
     public static void main(String[] args) {
         UserController userController = new UserController();
         BikeController bikeController = new BikeController();
+        RentalController rentalController = new RentalController();
         try {
             Connection conn = DatabaseConnection.getConnection();
             if (conn != null && !conn.isClosed()) {
@@ -37,13 +42,13 @@ public class TestDatabaseConnection {
                     System.out.println("Read User failed: User not found");
                 }
 
-                // Update
-                if (readUser != null) {
-                    readUser.setName("John Updated");
-                    readUser.setEmail("john.updated@example.com");
-                    userController.updateUser(readUser);
-                    System.out.println("User updated: " + readUser.getName());
-                }
+                // // Update
+                // if (readUser != null) {
+                //     readUser.setName("John Updated");
+                //     readUser.setEmail("john.updated@example.com");
+                //     userController.updateUser(readUser);
+                //     System.out.println("User updated: " + readUser.getName());
+                // }
 
                 // Bike CRUD
                 Bike bike = new Bike(0, "Trek", "FX 1", 5.0, "available", "Good condition", null);
@@ -59,6 +64,38 @@ public class TestDatabaseConnection {
                     bikeController.deleteBike(bike.getBikeId());
                     System.out.println("Bike with ID " + bike.getBikeId() + " deleted");
                 }
+
+                // Rental CRUD
+                User tempUser = new User(0, "Temp User", "temp" + System.currentTimeMillis() + "@example.com", "temp123", "0987654321", "customer", null);
+                userController.createUser(tempUser);
+                System.out.println("Temp User created with ID: " + tempUser.getUserId());
+
+                Bike tempBike = new Bike(0, "Temp Bike", "Model X", 4.0, "available", "Good", null);
+                bikeController.createBike(tempBike);
+                System.out.println("Temp Bike created with ID: " + tempBike.getBikeId());
+                
+                Timestamp startTime = new Timestamp(new Date().getTime());
+                Timestamp endTime = new Timestamp(new Date().getTime() + 3600000); // 1 hour later
+                Rental rental = new Rental(0, tempUser.getUserId(), tempBike.getBikeId(), startTime, endTime, 6.0);
+                rentalController.createRental(rental);
+                System.out.println("Rental created with ID: " + rental.getRentalId());
+
+                Rental readRental = rentalController.readRental(rental.getRentalId());
+                if (readRental != null) {
+                    System.out.println("Read Rental: User ID " + readRental.getUserId() + ", Bike ID " + readRental.getBikeId());
+                    readRental.setTotalCost(7.0);
+                    rentalController.updateRental(readRental);
+                    System.out.println("Rental updated: Total cost = " + readRental.getTotalCost());
+                    rentalController.deleteRental(rental.getRentalId());
+                    System.out.println("Rental with ID " + rental.getRentalId() + " deleted");
+                }
+
+                // Clean up temp user and bike
+                userController.deleteUser(tempUser.getUserId());
+                System.out.println("Temp User with ID " + tempUser.getUserId() + " deleted");
+                
+                bikeController.deleteBike(tempBike.getBikeId());
+                System.out.println("Temp Bike with ID " + tempBike.getBikeId() + " deleted");
 
                 DatabaseConnection.closeConnection();
             } else {
