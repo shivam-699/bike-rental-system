@@ -67,11 +67,12 @@ public class LoginView extends JFrame {
                 try {
                     User user = userController.readUserByEmail(email);
                     System.out.println("Checking login for: " + email + ", input password: " + password + 
-                    ", retrieved hash: " + (user != null ? user.getPasswordHash() : "null"));
+                                        ", retrieved hash: " + (user != null ? user.getPasswordHash() : "null"));
                     if (user != null && BCrypt.checkpw(password, user.getPasswordHash())) {
                         JOptionPane.showMessageDialog(LoginView.this, "Login successful for: " + email);
                         if ("admin".equals(user.getRole())) {
                             JOptionPane.showMessageDialog(LoginView.this, "Redirecting to Admin Dashboard");
+                            new AdminDashboardView();
                         } else {
                             JOptionPane.showMessageDialog(LoginView.this, "Redirecting to Customer Dashboard");
                         }
