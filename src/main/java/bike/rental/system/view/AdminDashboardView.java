@@ -14,17 +14,17 @@ public class AdminDashboardView extends JFrame {
     private JLabel totalRentalsLabel;
     private JLabel totalRevenueLabel;
     private JLabel availableBikesLabel;
-    private JTextField brandField, modelField, priceField, bikeIdField;
+    private JTextField brandField, modelField, priceField, bikeIdField, editBikeIdField, editBrandField, editModelField, editPriceField;
     private AdminDashboardModel model;
 
     public AdminDashboardView() throws SQLException {
         model = new AdminDashboardModel();
         setTitle("Admin Dashboard");
-        setSize(400, 450);
+        setSize(400, 600); // Increased size for additional fields
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(new GridLayout(8, 2, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(12, 2, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         panel.add(new JLabel("Total Rentals:"));
@@ -39,15 +39,15 @@ public class AdminDashboardView extends JFrame {
         availableBikesLabel = new JLabel(String.valueOf(model.getAvailableBikes()));
         panel.add(availableBikesLabel);
 
-        panel.add(new JLabel("Brand:"));
+        panel.add(new JLabel("Add Brand:"));
         brandField = new JTextField(10);
         panel.add(brandField);
 
-        panel.add(new JLabel("Model:"));
+        panel.add(new JLabel("Add Model:"));
         modelField = new JTextField(10);
         panel.add(modelField);
 
-        panel.add(new JLabel("Price per Hour:"));
+        panel.add(new JLabel("Add Price per Hour:"));
         priceField = new JTextField(10);
         panel.add(priceField);
 
@@ -99,6 +99,46 @@ public class AdminDashboardView extends JFrame {
         });
         panel.add(deleteBikeButton);
 
+        panel.add(new JLabel("Edit Bike ID:"));
+        editBikeIdField = new JTextField(10);
+        panel.add(editBikeIdField);
+
+        panel.add(new JLabel("Edit Brand:"));
+        editBrandField = new JTextField(10);
+        panel.add(editBrandField);
+
+        panel.add(new JLabel("Edit Model:"));
+        editModelField = new JTextField(10);
+        panel.add(editModelField);
+
+        panel.add(new JLabel("Edit Price per Hour:"));
+        editPriceField = new JTextField(10);
+        panel.add(editPriceField);
+
+        JButton editBikeButton = new JButton("Edit Bike");
+        editBikeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int bikeId = Integer.parseInt(editBikeIdField.getText().trim());
+                    String brand = editBrandField.getText().trim();
+                    String model = editModelField.getText().trim();
+                    double price = Double.parseDouble(editPriceField.getText().trim());
+                    if (editBikeInDatabase(bikeId, brand, model, price)) {
+                        JOptionPane.showMessageDialog(AdminDashboardView.this, "Bike updated successfully!");
+                        refreshDashboard();
+                    } else {
+                        JOptionPane.showMessageDialog(AdminDashboardView.this, "Failed to update bike or bike not found.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(AdminDashboardView.this, "Please enter valid ID and price.", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(AdminDashboardView.this, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        panel.add(editBikeButton);
+
         add(panel);
         setVisible(true);
     }
@@ -125,6 +165,19 @@ public class AdminDashboardView extends JFrame {
         }
     }
 
+    private boolean editBikeInDatabase(int bikeId, String brand, String model, double price) throws SQLException {
+        String sql = "UPDATE bikes SET brand = ?, model = ?, price_per_hour = ? WHERE bike_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, brand);
+            pstmt.setString(2, model);
+            pstmt.setDouble(3, price);
+            pstmt.setInt(4, bikeId);
+            int rows = pstmt.executeUpdate();
+            return rows > 0;
+        }
+    }
+
     private void refreshDashboard() throws SQLException {
         totalRentalsLabel.setText(String.valueOf(model.getTotalRentals()));
         totalRevenueLabel.setText(String.format("%.2f", model.getTotalRevenue()));
@@ -133,6 +186,10 @@ public class AdminDashboardView extends JFrame {
         modelField.setText("");
         priceField.setText("");
         bikeIdField.setText("");
+        editBikeIdField.setText("");
+        editBrandField.setText("");
+        editModelField.setText("");
+        editPriceField.setText("");
     }
 
     public static void main(String[] args) {
