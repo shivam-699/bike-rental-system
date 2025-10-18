@@ -2,6 +2,7 @@ package bike.rental.system.controller;
 
 import bike.rental.system.model.DatabaseConnection;
 import bike.rental.system.model.User;
+import org.mindrot.jbcrypt.BCrypt;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
