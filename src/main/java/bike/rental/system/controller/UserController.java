@@ -10,12 +10,12 @@ import java.sql.SQLException;
 
 public class UserController {
     public void createUser(User user) throws SQLException {
-        String sql = "INSERT INTO users (name, email, password, phone, role) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (name, email, passwordHash, phone, role) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql, new String[] { "user_id" })) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, new String[] { "user_id" })) {
             pstmt.setString(1, user.getName());
             pstmt.setString(2, user.getEmail());
-            pstmt.setString(3, user.getPassword());
+            pstmt.setString(3, BCrypt.hashpw(user.getPasswordHash(), BCrypt.gensalt()));
             pstmt.setString(4, user.getPhone());
             pstmt.setString(5, user.getRole());
             pstmt.executeUpdate();
@@ -29,7 +29,7 @@ public class UserController {
     public User readUser(int userId) throws SQLException {
         String sql = "SELECT * FROM users WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -37,7 +37,7 @@ public class UserController {
                 user.setUserId(rs.getInt("user_id"));
                 user.setName(rs.getString("name"));
                 user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
+                user.setPasswordHash(rs.getString("passwordHash"));
                 user.setPhone(rs.getString("phone"));
                 user.setRole(rs.getString("role"));
                 user.setCreatedAt(rs.getTimestamp("created_at"));
@@ -48,12 +48,12 @@ public class UserController {
     }
 
     public void updateUser(User user) throws SQLException {
-        String sql = "UPDATE users SET name = ?, email = ?, password = ?, phone = ?, role = ? WHERE user_id = ?";
+        String sql = "UPDATE users SET name = ?, email = ?, passwordHash = ?, phone = ?, role = ? WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, user.getName());
             pstmt.setString(2, user.getEmail());
-            pstmt.setString(3, user.getPassword());
+            pstmt.setString(3, BCrypt.hashpw(user.getPasswordHash(), BCrypt.gensalt()));
             pstmt.setString(4, user.getPhone());
             pstmt.setString(5, user.getRole());
             pstmt.setInt(6, user.getUserId());
@@ -64,16 +64,17 @@ public class UserController {
     public void deleteUser(int userId) throws SQLException {
         String sql = "DELETE FROM users WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             pstmt.executeUpdate();
         }
     }
 
+    // Add readUserByEmail method
     public User readUserByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM users WHERE email = ?";
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, email);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -81,15 +82,19 @@ public class UserController {
                 user.setUserId(rs.getInt("user_id"));
                 user.setName(rs.getString("name"));
                 user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
+                user.setPasswordHash(rs.getString("passwordHash"));
                 user.setPhone(rs.getString("phone"));
                 user.setRole(rs.getString("role"));
                 user.setCreatedAt(rs.getTimestamp("created_at"));
+                System.out.println("Retrieved user: " + user.getEmail() + ", passwordHash: " + user.getPasswordHash());
                 return user;
             }
+            System.out.println("No user found for email: " + email);
             return null;
         }
     }
-
     // Add update and delete methods similarly
 }
+
+
+

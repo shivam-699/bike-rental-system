@@ -2,6 +2,7 @@ package bike.rental.system.view;
 
 import bike.rental.system.controller.UserController;
 import bike.rental.system.model.User;
+import org.mindrot.jbcrypt.BCrypt;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -61,13 +62,14 @@ public class LoginView extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String email = emailField.getText();
-                char[] passwordChars = passwordField.getPassword();
+                String email = emailField.getText().trim(); // Trim to avoid whitespace
+                String password = new String(passwordField.getPassword()).trim(); // Trim password input
                 try {
                     User user = userController.readUserByEmail(email);
-                    if (user != null && new String(passwordChars).equals(user.getPassword())) {
+                    System.out.println("Checking login for: " + email + ", input password: " + password + 
+                    ", retrieved hash: " + (user != null ? user.getPasswordHash() : "null"));
+                    if (user != null && BCrypt.checkpw(password, user.getPasswordHash())) {
                         JOptionPane.showMessageDialog(LoginView.this, "Login successful for: " + email);
-                        // Placeholder for role-based navigation
                         if ("admin".equals(user.getRole())) {
                             JOptionPane.showMessageDialog(LoginView.this, "Redirecting to Admin Dashboard");
                         } else {
@@ -80,10 +82,6 @@ public class LoginView extends JFrame {
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(LoginView.this, "Error during login: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 } finally {
-                    // Clear password for security
-                    if (passwordChars != null) {
-                        java.util.Arrays.fill(passwordChars, ' ');
-                    }
                     passwordField.setText("");
                 }
             }
