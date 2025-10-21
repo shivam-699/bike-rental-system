@@ -45,14 +45,7 @@ public class TestDatabaseConnection {
                     System.out.println("Read User failed: User not found");
                 }
 
-                // // Update
-                // if (readUser != null) {
-                //     readUser.setName("John Updated");
-                //     readUser.setEmail("john.updated@example.com");
-                //     userController.updateUser(readUser);
-                //     System.out.println("User updated: " + readUser.getName());
-                // }
-
+        
                 // Bike CRUD
                 Bike bike = new Bike(0, "Trek", "FX 1", 5.0, "available", "Good condition", null);
                 bikeController.createBike(bike);
@@ -119,7 +112,7 @@ public class TestDatabaseConnection {
                 bikeController.deleteBike(tempBike.getBikeId());
                 System.out.println("Temp Bike with ID " + tempBike.getBikeId() + " deleted");
 
-                DatabaseConnection.closeConnection();
+                // DatabaseConnection.closeConnection();
             } else {
                 System.out.println("Connection is null or closed!");
             }

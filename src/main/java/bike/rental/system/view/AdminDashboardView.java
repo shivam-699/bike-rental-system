@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AdminDashboardView extends JFrame {
@@ -15,16 +16,17 @@ public class AdminDashboardView extends JFrame {
     private JLabel totalRevenueLabel;
     private JLabel availableBikesLabel;
     private JTextField brandField, modelField, priceField, bikeIdField, editBikeIdField, editBrandField, editModelField, editPriceField;
+    private JTextArea bikeListArea;
     private AdminDashboardModel model;
 
     public AdminDashboardView() throws SQLException {
         model = new AdminDashboardModel();
         setTitle("Admin Dashboard");
-        setSize(400, 600); // Increased size for additional fields
+        setSize(400, 700); // Increased size for bike list
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(new GridLayout(12, 2, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(13, 2, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         panel.add(new JLabel("Total Rentals:"));
@@ -139,6 +141,29 @@ public class AdminDashboardView extends JFrame {
         });
         panel.add(editBikeButton);
 
+        panel.add(new JLabel("Bike List:"));
+        bikeListArea = new JTextArea(5, 20);
+        bikeListArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(bikeListArea);
+        panel.add(scrollPane);
+
+        JButton refreshListButton = new JButton("Refresh Bike List");
+        refreshListButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refreshBikeList();
+            }
+        });
+        panel.add(refreshListButton);
+
+        // Initial refresh
+        try {
+            refreshDashboard();
+            refreshBikeList();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error loading dashboard: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
         add(panel);
         setVisible(true);
     }
@@ -190,6 +215,28 @@ public class AdminDashboardView extends JFrame {
         editBrandField.setText("");
         editModelField.setText("");
         editPriceField.setText("");
+    }
+
+    private void refreshBikeList() {
+        try {
+            String sql = "SELECT bike_id, brand, model, price_per_hour, status FROM bikes";
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(sql);
+                 ResultSet rs = pstmt.executeQuery()) {
+                StringBuilder list = new StringBuilder();
+                while (rs.next()) {
+                    list.append("ID: ").append(rs.getInt("bike_id"))
+                        .append(", Brand: ").append(rs.getString("brand"))
+                        .append(", Model: ").append(rs.getString("model"))
+                        .append(", Price: ").append(rs.getDouble("price_per_hour"))
+                        .append(", Status: ").append(rs.getString("status"))
+                        .append("\n");
+                }
+                bikeListArea.setText(list.toString());
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error refreshing bike list: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
