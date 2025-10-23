@@ -1,7 +1,8 @@
 package bike.rental.system.view;
 
 import bike.rental.system.model.AdminDashboardModel;
-import bike.rental.system.model.DatabaseConnection;
+import bike.rental.system.util.DatabaseConnection;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,6 +21,7 @@ public class AdminDashboardView extends JFrame {
     private AdminDashboardModel model;
 
     public AdminDashboardView() throws SQLException {
+        System.out.println("Admin Dashboard initializing...");
         model = new AdminDashboardModel();
         setTitle("Admin Dashboard");
         setSize(400, 700); // Increased size for bike list
@@ -166,6 +168,7 @@ public class AdminDashboardView extends JFrame {
 
         add(panel);
         setVisible(true);
+        System.out.println("Admin Dashboard loaded successfully.");
     }
 
     private boolean addBikeToDatabase(String brand, String model, double price) throws SQLException {

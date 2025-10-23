@@ -1,7 +1,8 @@
 package bike.rental.system.controller;
 
-import bike.rental.system.model.DatabaseConnection;
 import bike.rental.system.model.Payment;
+import bike.rental.system.util.DatabaseConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

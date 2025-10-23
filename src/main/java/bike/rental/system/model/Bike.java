@@ -11,17 +11,10 @@ public class Bike {
     private String conditionDescription;
     private Timestamp createdAt;
 
+    // Default constructor
     public Bike() {}
-    public Bike(int bikeId, String brand, String model, double pricePerHour, String status, String conditionDescription, Timestamp createdAt) {
-        this.bikeId = bikeId;
-        this.brand = brand;
-        this.model = model;
-        this.pricePerHour = pricePerHour;
-        this.status = status;
-        this.conditionDescription = conditionDescription;
-        this.createdAt = createdAt;
-    }
 
+    // Getters and Setters
     public int getBikeId() { return bikeId; }
     public void setBikeId(int bikeId) { this.bikeId = bikeId; }
     public String getBrand() { return brand; }

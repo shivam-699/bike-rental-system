@@ -9,8 +9,14 @@ public class Rental {
     private Timestamp startTime;
     private Timestamp endTime;
     private double totalCost;
+    private String status; // From previous update
+    private String bikeBrand; // New field
+    private String bikeModel; // New field
 
+    // Default constructor
     public Rental() {}
+
+    // Constructor with parameters
     public Rental(int rentalId, int userId, int bikeId, Timestamp startTime, Timestamp endTime, double totalCost) {
         this.rentalId = rentalId;
         this.userId = userId;
@@ -20,6 +26,7 @@ public class Rental {
         this.totalCost = totalCost;
     }
 
+    // Getters and Setters
     public int getRentalId() { return rentalId; }
     public void setRentalId(int rentalId) { this.rentalId = rentalId; }
     public int getUserId() { return userId; }
@@ -32,4 +39,10 @@ public class Rental {
     public void setEndTime(Timestamp endTime) { this.endTime = endTime; }
     public double getTotalCost() { return totalCost; }
     public void setTotalCost(double totalCost) { this.totalCost = totalCost; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public String getBikeBrand() { return bikeBrand; } // New getter
+    public void setBikeBrand(String bikeBrand) { this.bikeBrand = bikeBrand; } // New setter
+    public String getBikeModel() { return bikeModel; } // New getter
+    public void setBikeModel(String bikeModel) { this.bikeModel = bikeModel; } // New setter
 }

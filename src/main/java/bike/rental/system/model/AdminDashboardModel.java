@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import bike.rental.system.util.DatabaseConnection;
+
 public class AdminDashboardModel {
     public int getTotalRentals() throws SQLException {
         String sql = "SELECT COUNT(*) AS total FROM rentals";

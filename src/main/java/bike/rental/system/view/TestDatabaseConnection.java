@@ -1,11 +1,11 @@
-package bike.rental.system;
+package bike.rental.system.view;
 
 import bike.rental.system.controller.UserController;
-import bike.rental.system.model.DatabaseConnection;
 import bike.rental.system.controller.BikeController;
 import bike.rental.system.controller.RentalController;
 import bike.rental.system.controller.PaymentController;
 import bike.rental.system.model.User;
+import bike.rental.system.util.DatabaseConnection;
 import bike.rental.system.model.Bike;
 import bike.rental.system.model.Rental;
 import bike.rental.system.model.Payment;
@@ -13,7 +13,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
-
 
 public class TestDatabaseConnection {
     public static void main(String[] args) {
@@ -26,7 +25,7 @@ public class TestDatabaseConnection {
             if (conn != null && !conn.isClosed()) {
                 System.out.println("Connection successfully!");
 
-                // user CRUD
+                // User CRUD
                 String uniqueEmail = "john" + System.currentTimeMillis() + "@example.com"; // Unique email
                 User user = new User(0, "John Doe", uniqueEmail, "password123", "1234567890", "customer", null);
                 userController.createUser(user);
@@ -45,12 +44,18 @@ public class TestDatabaseConnection {
                     System.out.println("Read User failed: User not found");
                 }
 
-        
                 // Bike CRUD
-                Bike bike = new Bike(0, "Trek", "FX 1", 5.0, "available", "Good condition", null);
+                Bike bike = new Bike();
+                bike.setBikeId(0);
+                bike.setBrand("Trek");
+                bike.setModel("FX 1");
+                bike.setPricePerHour(5.0);
+                bike.setStatus("available");
+                bike.setConditionDescription("Good condition");
+                bike.setCreatedAt(null); // Set to null or a valid Timestamp if needed
                 bikeController.createBike(bike);
                 System.out.println("Bike created with ID: " + bike.getBikeId());
-
+            
                 Bike readBike = bikeController.readBike(bike.getBikeId());
                 if (readBike != null) {
                     System.out.println("Read Bike: " + readBike.getBrand() + " " + readBike.getModel());
@@ -66,10 +71,17 @@ public class TestDatabaseConnection {
                 userController.createUser(tempUser);
                 System.out.println("Temp User created with ID: " + tempUser.getUserId());
 
-                Bike tempBike = new Bike(0, "Temp Bike", "Model X", 4.0, "available", "Good", null);
+                Bike tempBike = new Bike();
+                tempBike.setBikeId(0);
+                tempBike.setBrand("Temp Bike");
+                tempBike.setModel("Model X");
+                tempBike.setPricePerHour(4.0);
+                tempBike.setStatus("available");
+                tempBike.setConditionDescription("Good");
+                tempBike.setCreatedAt(null);
                 bikeController.createBike(tempBike);
                 System.out.println("Temp Bike created with ID: " + tempBike.getBikeId());
-                
+            
                 Timestamp startTime = new Timestamp(new Date().getTime());
                 Timestamp endTime = new Timestamp(new Date().getTime() + 3600000); // 1 hour later
                 Rental rental = new Rental(0, tempUser.getUserId(), tempBike.getBikeId(), startTime, endTime, 6.0);
@@ -99,12 +111,10 @@ public class TestDatabaseConnection {
                     System.out.println("Payment with ID " + payment.getPaymentId() + " deleted");
                 }
 
-
                 // Delete rental after payment
                 rentalController.deleteRental(rental.getRentalId());
                 System.out.println("Rental with ID " + rental.getRentalId() + " deleted");
 
-                
                 // Clean up temp user and bike
                 userController.deleteUser(tempUser.getUserId());
                 System.out.println("Temp User with ID " + tempUser.getUserId() + " deleted");
