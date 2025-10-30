@@ -41,7 +41,7 @@
 
 ## 📊 Project Metrics
 
-- **Development Time**: [Your estimated timeframe]
+- **Development Time**: [it took me 5 days]
 - **Codebase**: 27 Java classes, 11 database tables
 - **Features**: 8+ major functional modules
 - **Users**: Multi-role system (Admin + Customer)
