@@ -2,7 +2,7 @@ markdown
 # Bike Rental System - Technical Documentation
 
 ## 🏗️ System Architecture
-
+```
 ### **Architecture Overview**
 Presentation Layer (Java Swing)
 ↓
@@ -11,8 +11,7 @@ Business Logic Layer (Controllers)
 Data Access Layer (Models)
 ↓
 Database Layer (MySQL)
-
-text
+```
 
 ### **Technology Stack**
 - **Frontend**: Java Swing GUI
@@ -23,7 +22,7 @@ text
 - **Version Control**: Git/GitHub
 
 ## 🗃️ Database Design
-
+```
 ### **Entity Relationship Diagram**
 Users ←---→ Rentals ←---→ Bikes
 ↓ ↓ ↓
@@ -32,8 +31,7 @@ Messages Payments Maintenance
 Tickets ←---→ TicketReplies
 ↓
 Broadcasts
-
-text
+```
 
 ### **Core Tables Description**
 1. **users** - User accounts and authentication
@@ -58,15 +56,14 @@ text
 - Role-based data access
 
 ## 💻 Code Structure
-
+```
 ### **Package Organization**
 bike.rental.system/
 ├── controller/ # Business logic
 ├── model/ # Data entities
 ├── util/ # Utilities
 └── view/ # UI components
-
-text
+```
 
 ### **Key Classes & Responsibilities**
 
