@@ -1,10 +1,10 @@
-# Bike Rental System ???? 
+# Bike Rental System  
  
 A complete Java Swing-based Bike Rental Management System with MySQL database integration. 
  
 ## Features 
  
-### ????? Admin Panel 
+### Admin Panel 
 - User Management 
 - Bike Inventory Management  
 - Rental Approvals 
@@ -13,7 +13,7 @@ A complete Java Swing-based Bike Rental Management System with MySQL database in
 - Financial Overview 
 - Broadcast Messaging 
  
-### ?? Customer Panel 
+###  Customer Panel 
 - Bike Rental with Search 
 - Promo Code Application 
 - Rental History 
