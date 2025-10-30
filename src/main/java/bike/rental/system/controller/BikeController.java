@@ -105,4 +105,22 @@ public class BikeController {
             stmt.executeUpdate();
         }
     }
+
+    public boolean updateBikeStatus(int bikeId, String status) {
+    String sql = "UPDATE bikes SET status = ? WHERE bike_id = ?";
+    
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setString(1, status);
+        stmt.setInt(2, bikeId);
+        
+        return stmt.executeUpdate() > 0;
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error updating bike status: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+}
 }

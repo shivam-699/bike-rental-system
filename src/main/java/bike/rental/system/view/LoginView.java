@@ -92,7 +92,7 @@ public class LoginView extends JFrame {
             forgotPasswordButton.setText(getTranslatedText("Forgot Password?"));
             loginButton.setText(getTranslatedText("Login"));
             registerButton.setText(getTranslatedText("Register"));
-            languageButton.setText(getTranslatedText("Toggle Language"));
+            // languageButton.setText(getTranslatedText("Toggle Language"));
         });
         gbc.gridx = 1;
         gbc.gridy = 6;
@@ -128,7 +128,7 @@ public class LoginView extends JFrame {
                             JOptionPane.showMessageDialog(LoginView.this, getTranslatedText("Login successful for: ") + email);
                             if ("admin".equals(user.getRole())) {
                                 JOptionPane.showMessageDialog(LoginView.this, getTranslatedText("Redirecting to Admin Dashboard"));
-                                new AdminDashboardView().setVisible(true);
+                                new AdminDashboardView(user.getUserId()).setVisible(true);
                             } else {
                                 JOptionPane.showMessageDialog(LoginView.this, getTranslatedText("Redirecting to Customer Dashboard"));
                                 new CustomerDashboardView(user.getUserId()).setVisible(true);

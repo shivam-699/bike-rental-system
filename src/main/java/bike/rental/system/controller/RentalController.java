@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Timestamp;
 
 import bike.rental.system.model.Rental;
 import bike.rental.system.util.DatabaseConnection;
@@ -98,5 +99,30 @@ public Rental readRental(int rentalId) throws SQLException {
             e.printStackTrace();
         }
         return rentals;
+    }
+
+
+    public boolean createRental(int userId, int bikeId, int hours, double totalCost, String promoCode) {
+        String sql = "INSERT INTO rentals (user_id, bike_id, start_time, end_time, total_cost, promo_code, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            Timestamp startTime = new Timestamp(System.currentTimeMillis());
+            Timestamp endTime = new Timestamp(System.currentTimeMillis() + (hours * 60L * 60 * 1000));
+            
+            stmt.setInt(1, userId);
+            stmt.setInt(2, bikeId);
+            stmt.setTimestamp(3, startTime);
+            stmt.setTimestamp(4, endTime);
+            stmt.setDouble(5, totalCost);
+            stmt.setString(6, promoCode.isEmpty() ? null : promoCode);
+            
+            return stmt.executeUpdate() > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
