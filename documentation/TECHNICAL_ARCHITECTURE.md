@@ -3,16 +3,16 @@
 ## 🏗️ System Architecture Overview
 
 The Bike Rental System follows a **3-tier architecture** with clear separation of concerns:
+```
 ┌─────────────────┐ ┌──────────────────┐ ┌─────────────────┐
-│ PRESENTATION │ │ BUSINESS LOGIC │ │ DATA ACCESS │
-│ LAYER │ │ LAYER │ │ LAYER │
+│ PRESENTATION    │ │   BUSINESS LOGIC │ │    DATA ACCESS  │
+│ LAYER           │ │        LAYER     │ │     LAYER       │
 ├─────────────────┤ ├──────────────────┤ ├─────────────────┤
-│ Java Swing │◄──►│ Controllers │◄──►│ MySQL Database │
-│ Views │ │ (Business │ │ (11 Tables) │
-│ │ │ Logic) │ │ │
+│    Java Swing  │◄►│   Controllers    │◄►│ MySQL Database │
+│      Views      │ │    Business      │ │  (11 Tables)    │
+│                 │ │      Logic)      │ │                 │
 └─────────────────┘ └──────────────────┘ └─────────────────┘
-
-text
+```
 
 ## 🛠️ Technology Stack
 
@@ -37,6 +37,7 @@ text
 - **Database Driver**: MySQL Connector/J
 
 ## 📁 Project Structure
+```
 src/main/java/bike/rental/system/
 ├── controller/ # Business logic controllers
 │ ├── BikeController.java
@@ -56,8 +57,8 @@ src/main/java/bike/rental/system/
 └── util/ # Utilities
 ├── DatabaseConnection.java
 └── GenerateHash.java
+```
 
-text
 
 ## 🔄 Data Flow
 
@@ -115,38 +116,16 @@ text
 ```bash
 mvn clean compile
 mvn exec:java -Dexec.mainClass="bike.rental.system.view.LoginView"
+```
+
 📈 Scalability Considerations
 Current Architecture Supports
 Multiple concurrent users
-
 Transactional integrity
-
 Modular expansion
-
 Future Enhancements
 Web interface
-
 Mobile application
-
 Microservices architecture
-
 Cloud deployment
 
-text
-
-## 🎯 **ACTION STEPS:**
-
-1. **Run:** `notepad documentation\TECHNICAL_ARCHITECTURE.md`
-2. **Copy-paste** the content above
-3. **Save** and close
-4. **Verify:** `type documentation\TECHNICAL_ARCHITECTURE.md`
-
-## 💡 **What This Adds:**
-- ✅ **Professional technical documentation**
-- ✅ **System architecture overview**
-- ✅ **Technology stack details**
-- ✅ **Data flow explanations**
-- ✅ **Security features**
-- ✅ **Deployment instructions**
-
-**Please create this file, then we'll create the final demonstration script!** 🚀
